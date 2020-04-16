@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.Pane?>
+
+<Pane fx:id="inventory" stylesheets="@inventory.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <Button fx:id="slotHead" layoutX="106.0" onAction="#showForm" />
+        <Button fx:id="slotNeck" layoutX="106.0" layoutY="59.0" onAction="#showForm" />
+        <Button fx:id="slotShoulders" layoutX="106.0" layoutY="118.0" onAction="#showForm" />
+        <Button fx:id="slotBack" layoutX="106.0" layoutY="177.0" onAction="#showForm" />
+        <Button fx:id="slotChest" layoutX="106.0" layoutY="236.0" onAction="#showForm" />
+        <Button fx:id="slotShirt" layoutX="106.0" layoutY="295.0" onAction="#showForm" />
+        <Button fx:id="slotTabard" layoutX="106.0" layoutY="354.0" onAction="#showForm" />
+        <Button fx:id="slotWrist" layoutX="106.0" layoutY="413.0" onAction="#showForm" />
+        <Button fx:id="slotHands" layoutX="506.0" onAction="#showForm" />
+        <Button fx:id="slotWaist" layoutX="506.0" layoutY="59.0" onAction="#showForm" />
+        <Button fx:id="slotLegs" layoutX="506.0" layoutY="118.0" onAction="#showForm" />
+        <Button fx:id="slotFeet" layoutX="506.0" layoutY="177.0" onAction="#showForm" />
+        <Button fx:id="slotFinger1" layoutX="506.0" layoutY="236.0" onAction="#showForm" />
+        <Button fx:id="slotFinger2" layoutX="506.0" layoutY="295.0" onAction="#showForm" />
+        <Button fx:id="slotTrinket1" layoutX="506.0" layoutY="354.0" onAction="#showForm" />
+        <Button fx:id="slotTrinket2" layoutX="506.0" layoutY="413.0" onAction="#showForm" />
+        <Button fx:id="slotMainHand" layoutX="242.0" layoutY="490.0" onAction="#showForm" />
+        <Button fx:id="slotOffHand" layoutX="301.0" layoutY="490.0" onAction="#showForm" />
+        <Button fx:id="slotRanged" layoutX="360.0" layoutY="490.0" onAction="#showForm" />
+        <Button fx:id="slotBag" layoutX="633.0" layoutY="199.0" onAction="#showForm" />
+    </children>
+</Pane>

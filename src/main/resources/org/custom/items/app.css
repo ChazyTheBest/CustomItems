@@ -1,0 +1,76 @@
+#header-section {
+    -fx-width: 100%;
+    -fx-height: 43px;
+    -fx-display: block;
+    -fx-padding: 0 14px;
+    -fx-box-shadow: inset 0 0 6px 0 #000, 0 0 8px 0 rgba(0, 0, 0, 0.2), 0 2px 0 0 rgba(0, 0, 0, 0.75);
+    -fx-border-radius: 5px;
+    -fx-background-size: 100% 100%;
+    -fx-background-color: transparent;
+    -fx-background-image: url("./content_header.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center center;
+    -fx-background-color: #131112;
+}
+
+#header-section Label {
+    -fx-text-fill: #ffffff;
+    -fx-padding: 10px;
+}
+
+#exit {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 16px;
+}
+
+#sidebar-section {
+
+}
+
+#sidebar-section Label {
+    -fx-padding: 20 28;
+    -fx-width: 55px;
+    -fx-height: 55px;
+    -fx-background-image: url("./icons.png");
+    -fx-background-repeat: no-repeat;
+}
+
+#warrior { -fx-background-position: -1px -110px }
+#paladin { -fx-background-position: -55px -110px }
+#hunter  { -fx-background-position: -110px -0px }
+#rogue   { -fx-background-position: -55px -55px }
+#priest  { -fx-background-position: -0px -55px }
+#dk      { -fx-background-position: 0 0 }
+#shaman  { -fx-background-position: -110px -55px }
+#mage    { -fx-background-position: -165px -0px }
+#warlock { -fx-background-position: -165px -55px }
+#druid   { -fx-background-position: -55px -0px }
+
+#content {
+    -fx-padding: 10 20 10 20;
+    -fx-wrap-text: true;
+    -fx-background-image: url("./background.jpg");
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: top right;
+}
+
+#content Text {
+    -fx-font-size: 25px;
+    -fx-padding: 0 0 10 0;
+    -fx-font-weight: 700;
+    -fx-fill: #766e64;
+    -fx-background-color: rgba(255, 255, 255, 0.02);
+}
+
+.spec {
+    -fx-width: 330px;
+    -fx-height: 93px;
+}
+
+#footer-section {
+    -fx-alignment: center;
+    -fx-padding: 10 10 10 10;
+    -fx-border-width: 1;
+    -fx-border-color: #E8E8E8 transparent transparent transparent;
+}
