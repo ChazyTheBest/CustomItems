@@ -133,7 +133,21 @@ public class AppController
 
             for (String role : classRoles)
             {
-                tabs.get(key).getChildren().add(new Label(role));
+                Node l = new Label(role.toUpperCase());
+
+                l.getStyleClass().add("role");
+
+                switch (role)
+                {
+                    case "tank": l.getStyleClass().add("tank"); break;
+                    case "healer": l.getStyleClass().add("healer"); break;
+                    case "melee":
+                    case "caster":
+                    case "ranged": l.getStyleClass().add("dps");
+                }
+
+                tabs.get(key).getChildren().add(l);
+                tabs.get(key).getStylesheets().add(getClass().getResource("roles.css").toString());
                 tabs.get(key).getChildren().get(index).setOnMouseClicked(e -> showItemPicker(key, role));
                 index++;
             }
@@ -571,12 +585,14 @@ public class AppController
         {
             int sameRow1 = row += 1;
             String color1 = ItemPreview.getSocketColor().get(Integer.parseInt(currentItem.getSocketColor_1()));
-            Node sImg1 = new Label();
+            Node sImg1 = new Label(),
+                 sText1 = new Text(String.format("      %s Socket", color1));
 
             sImg1.getStyleClass().add("socket");
             sImg1.setId(color1.toLowerCase() + "Socket");
+            sText1.getStyleClass().add("gray");
             item.add(sImg1, 0, sameRow1);
-            item.add(new Text(String.format("      %s Socket", color1)), 0, sameRow1);
+            item.add(sText1, 0, sameRow1);
         }
 
         // socket color 2
@@ -584,12 +600,14 @@ public class AppController
         {
             int sameRow2 = row += 1;
             String color2 = ItemPreview.getSocketColor().get(Integer.parseInt(currentItem.getSocketColor_2()));
-            Node sImg2 = new Label();
+            Node sImg2 = new Label(),
+                 sText2 = new Text(String.format("      %s Socket", color2));
 
             sImg2.getStyleClass().add("socket");
             sImg2.setId(color2.toLowerCase() + "Socket");
+            sText2.getStyleClass().add("gray");
             item.add(sImg2, 0, sameRow2);
-            item.add(new Text(String.format("      %s Socket", color2)), 0, sameRow2);
+            item.add(sText2, 0, sameRow2);
         }
 
         // socket color 3
@@ -597,12 +615,14 @@ public class AppController
         {
             int sameRow3 = row += 1;
             String color3 = ItemPreview.getSocketColor().get(Integer.parseInt(currentItem.getSocketColor_3()));
-            Node sImg3 = new Label();
+            Node sImg3 = new Label(),
+                 sText3 = new Text(String.format("      %s Socket", color3));
 
             sImg3.getStyleClass().add("socket");
             sImg3.setId(color3.toLowerCase() + "Socket");
+            sText3.getStyleClass().add("gray");
             item.add(sImg3, 0, sameRow3);
-            item.add(new Text(String.format("      %s Socket", color3)), 0, sameRow3);
+            item.add(sText3, 0, sameRow3);
         }
 
         // socket bonus

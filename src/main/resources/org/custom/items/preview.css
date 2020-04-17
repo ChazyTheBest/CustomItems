@@ -28,3 +28,5 @@ Label#metaSocket { -fx-background-position: 0px 0px }
 Label#redSocket { -fx-background-position: 0px -19px }
 Label#yellowSocket { -fx-background-position: 0px -38px }
 Label#blueSocket { -fx-background-position: 0px -57px }
+
+Text.gray { -fx-fill: gray }
