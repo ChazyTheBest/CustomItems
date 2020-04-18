@@ -75,7 +75,8 @@ public class ItemPreview
 
     private static Map<Integer, String> initInventoryType()
     {
-        return Map.ofEntries
+        //noinspection RedundantTypeArguments (explicit type arguments speedup compilation and analysis time)
+        return Map.<Integer, String>ofEntries
         (
             Map.entry(0, "Non equipable"),
             Map.entry(1, "Head"),
@@ -132,7 +133,8 @@ public class ItemPreview
 
     private static Map<Integer, String> initStatType()
     {
-        return Map.ofEntries
+        //noinspection RedundantTypeArguments (explicit type arguments speedup compilation and analysis time)
+        return Map.<Integer, String>ofEntries
         (
             Map.entry(0, "+%s Mana"),
             Map.entry(1, "+%s Health"),
@@ -398,27 +400,24 @@ public class ItemPreview
 
     private static Map<Integer, String> initSocketBonus()
     {
-        return Map.of
+        return Map.ofEntries
         (
-            1585, "",
-            2787, "",
-            2854, "",
-            2864, "",
-            2872, "+9 Healing",
-            3305, "+12 Stamina",
-            3307, "",
-            3312, "+8 Strength",
-            3313, "+8 Agility",
-            3351, "",
-            3352, "",
-            3353, "+8 Intellect",
-            3358, "",
-            3753  "+9 Spell Power",
-            3821, "",
-            3877, "+16 Attack power"
-
-
-
+            Map.entry(1585, ""),
+            Map.entry(2787, ""),
+            Map.entry(2854, ""),
+            Map.entry(2864, ""),
+            Map.entry(2872, "+9 Healing"),
+            Map.entry(3305, "+12 Stamina"),
+            Map.entry(3307, ""),
+            Map.entry(3312, "+8 Strength"),
+            Map.entry(3313, "+8 Agility"),
+            Map.entry(3351, ""),
+            Map.entry(3352, ""),
+            Map.entry(3353, "+8 Intellect"),
+            Map.entry(3358, ""),
+            Map.entry(3753, "+9 Spell Power"),
+            Map.entry(3821, ""),
+            Map.entry(3877, "+16 Attack power")
         );
     }
 
