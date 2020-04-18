@@ -402,21 +402,22 @@ public class ItemPreview
     {
         return Map.ofEntries
         (
-            Map.entry(1585, ""),
-            Map.entry(2787, ""),
-            Map.entry(2854, ""),
-            Map.entry(2864, ""),
-            Map.entry(2872, "+9 Healing"),
+            Map.entry(2340, "+40 Spell Power"),
+            Map.entry(2787, "+8 Critical Strike Rating"),
+            Map.entry(2854, "3 mana per 5 sec"),
+            Map.entry(2864, "+4 Critical Strike Rating"),
+            Map.entry(2872, "+5 Spell Power"),
+            Map.entry(2900, "+4 Spell Power"),
             Map.entry(3305, "+12 Stamina"),
-            Map.entry(3307, ""),
+            Map.entry(3307, "+9 Stamina"),
             Map.entry(3312, "+8 Strength"),
             Map.entry(3313, "+8 Agility"),
-            Map.entry(3351, ""),
-            Map.entry(3352, ""),
+            Map.entry(3351, "+6 Hit Rating"),
+            Map.entry(3352, "+8 Spirit"),
             Map.entry(3353, "+8 Intellect"),
-            Map.entry(3358, ""),
+            Map.entry(3358, "+6 Dodge Rating"),
             Map.entry(3753, "+9 Spell Power"),
-            Map.entry(3821, ""),
+            Map.entry(3821, "+8 Resilience Rating"),
             Map.entry(3877, "+16 Attack power")
         );
     }
