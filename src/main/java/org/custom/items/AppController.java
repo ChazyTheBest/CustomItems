@@ -292,7 +292,7 @@ public class AppController
             // +10% to stats
             mod = 1.1;
 
-            // no meta
+            // revert back to base socketColor
             currentItem.setSocketColor_1(currentItemCopy.getSocketColor_1());
         }
 
@@ -303,9 +303,10 @@ public class AppController
             // +50% to stats
             mod = 1.5;
 
-            // 1: meta, 2: red, 4: yellow, 8: blue
-            if (!currentItem.getSubclass().equals("0"))
+            // no meta socket for containers
+            if (!currentItem.getClas().equals("1"))
             {
+                // pve items get 1 meta socket
                 currentItem.setSocketColor_1("1");
             }
         }
