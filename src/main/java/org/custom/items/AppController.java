@@ -205,6 +205,9 @@ public class AppController
 
         currentItemCopy = new ItemTemplate();
 
+        currentItemCopy.setArmor(currentItem.getArmor());
+        currentItemCopy.setBlock(currentItem.getBlock());
+
         String stats[] = currentItem.getStat_value();
         String statsCopy[] = currentItemCopy.getStat_value();
 
@@ -309,6 +312,12 @@ public class AppController
 
         if (mod != 0)
         {
+            // armor value
+            currentItem.setArmor(Integer.toString(Double.valueOf(mod * Integer.parseInt(currentItemCopy.getArmor())).intValue()));
+
+            // block value
+            currentItem.setBlock(Integer.toString(Double.valueOf(mod * Integer.parseInt(currentItemCopy.getBlock())).intValue()));
+
             int stat_value[] = Stream.of(currentItemCopy.getStat_value()).mapToInt(Integer::parseInt).toArray();
 
             for (int i = 0; i < 10; i++)
@@ -550,7 +559,7 @@ public class AppController
             int aRow = row += 1;
 
             Node aType = new Text(ItemPreview.getInventoryType().get(Integer.parseInt(currentItem.getInventoryType()))),
-                    aName = new Text(ItemPreview.getArmorTypeSubClass().get(Integer.parseInt(currentItem.getSubclass())));
+                 aName = new Text(ItemPreview.getArmorTypeSubClass().get(Integer.parseInt(currentItem.getSubclass())));
 
             item.add(aType, 0, aRow);
             item.add(aName, 1, aRow);
@@ -561,6 +570,12 @@ public class AppController
             {
                 Node aValue = new Text(String.format("%s Armor", currentItem.getArmor()));
                 item.add(aValue, 0, row += 1);
+            }
+
+            if (!currentItem.getBlock().equals("0"))
+            {
+                Node bValue = new Text(String.format("%s Block", currentItem.getBlock()));
+                item.add(bValue, 0, row += 1);
             }
         }
 

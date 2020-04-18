@@ -1,4 +1,4 @@
-module org.custom.items {
+module CustomItems {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.sql;

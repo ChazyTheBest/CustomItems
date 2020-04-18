@@ -40,7 +40,7 @@ public class ItemPreview
     {
         return Map.ofEntries
         (
-            Map.entry(0, "Miscellaneous"),
+            Map.entry(0, ""),
             Map.entry(1, "Cloth"),
             Map.entry(2, "Leather"),
             Map.entry(3, "Mail"),
@@ -91,7 +91,7 @@ public class ItemPreview
             Map.entry(11, "Finger"),
             Map.entry(12, "Trinket"),
             Map.entry(13, "One-Hand"),
-            Map.entry(14, "Shield"),
+            Map.entry(14, "Off Hand"),
             Map.entry(15, "Ranged"),
             Map.entry(16, "Back"),
             Map.entry(17, "Two-Hand"),
@@ -400,13 +400,25 @@ public class ItemPreview
     {
         return Map.of
         (
-            3312,  "+8 Strength",
-            3313,  "+8 Agility",
-            3305,  "+12 Stamina",
-            3353,  "+8 Intellect",
-            2872,  "+9 Healing",
-            3753,  "+9 Spell Power",
-            38778, "+16 Attack Power"
+            1585, "",
+            2787, "",
+            2854, "",
+            2864, "",
+            2872, "+9 Healing",
+            3305, "+12 Stamina",
+            3307, "",
+            3312, "+8 Strength",
+            3313, "+8 Agility",
+            3351, "",
+            3352, "",
+            3353, "+8 Intellect",
+            3358, "",
+            3753  "+9 Spell Power",
+            3821, "",
+            3877, "+16 Attack power"
+
+
+
         );
     }
 
