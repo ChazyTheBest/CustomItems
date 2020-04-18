@@ -6,7 +6,6 @@ GridPane {
     -fx-border-color: #757575;
     -fx-border-radius: 3.5px;
     -fx-background-color: #080d22;
-    -fx-max-width: 150px;
 }
 
 Text { -fx-fill: white; -fx-font-size: 16px }

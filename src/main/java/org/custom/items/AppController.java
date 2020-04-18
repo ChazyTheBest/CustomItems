@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Stream;
 
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -31,11 +30,10 @@ public class AppController
 {
     @FXML private BorderPane appBody;
     @FXML private VBox content;
-    @FXML private Button exit, closePreview;
+    @FXML private Button closePreview;
     @FXML private RadioButton gold, pve;
     @FXML private Pane inventory, previewBody;
     @FXML private GridPane form;
-    @FXML private Label status;
     @FXML private ToggleGroup type;
     @FXML private TextField
 
@@ -153,9 +151,7 @@ public class AppController
             }
         }
 
-        exit.setOnAction(e -> Platform.exit());
-
-        status.setText("DB Status: Connected");
+        //status.setText("DB Status: Connected");
     }
 
     @FXML
@@ -264,6 +260,16 @@ public class AppController
     }
 
     @FXML
+    private void backToInventory(MouseEvent event)
+    {
+        gold.setSelected(false);
+        pve.setSelected(false);
+        closePreview();
+        content.getChildren().clear();
+        content.getChildren().add(inventory);
+    }
+
+    @FXML
     private void itemModifier(MouseEvent event)
     {
         RadioButton rb = (RadioButton) type.getSelectedToggle();
@@ -295,7 +301,10 @@ public class AppController
             mod = 1.5;
 
             // 1: meta, 2: red, 4: yellow, 8: blue
-            currentItem.setSocketColor_1("1");
+            if (!currentItem.getSubclass().equals("0"))
+            {
+                currentItem.setSocketColor_1("1");
+            }
         }
 
         if (mod != 0)
@@ -417,10 +426,7 @@ public class AppController
         String spells[] = { spell1.getText(), spell2.getText(), spell3.getText(), spell4.getText(), spell5.getText() },
                spellId[] = currentItem.getSpellid();
 
-        for (int i = 0; i < 5; i++)
-        {
-            spellId[i] = spells[i];
-        }
+        System.arraycopy(spells, 0, spellId, 0, 5);
 
         String triggers[] = { trigger1.getText(), trigger2.getText(), trigger3.getText(), trigger4.getText(), trigger5.getText() },
                spellTrigger[] = currentItem.getSpelltrigger();
@@ -437,6 +443,7 @@ public class AppController
             else
             {
                 UX.showAlert(Alert.AlertType.ERROR, "Form Error!", "The spell trigger is not valid.\n\nValid values are:\n0 (Use), 1 (Equip), 2 (Chance on hit), 4 (Soulstone), 5 (Use with no delay) and 6 (Learn Spell ID)");
+                return false;
             }
         }
 
@@ -470,7 +477,7 @@ public class AppController
 
         name.getStyleClass().add("itemName");
 
-        item.add(name, 0, row);
+        item.add(name, 0, row, 2, 1);
 
         // item bonding
         if (ItemPreview.getBonding().containsKey(Integer.parseInt(currentItem.getBonding())))
@@ -516,7 +523,8 @@ public class AppController
             item.add(dmg, 0, dRow);
             item.add(delay, 1, dRow);
 
-            item.setHalignment(wName, HPos.RIGHT);
+            GridPane.setHalignment(wName, HPos.RIGHT);
+            GridPane.setHalignment(delay, HPos.RIGHT);
 
             if (!currentItem.getDmg_min2().equals("0") && !currentItem.getDmg_max2().equals("0"))
             {
@@ -546,6 +554,8 @@ public class AppController
 
             item.add(aType, 0, aRow);
             item.add(aName, 1, aRow);
+
+            GridPane.setHalignment(aName, HPos.RIGHT);
 
             if (!currentItem.getArmor().equals("0"))
             {
@@ -664,9 +674,12 @@ public class AppController
         {
             if (spellId[i] != 0)
             {
+                int sameRow = row += 1;
                 Node spell = new Text(String.format("%s%s", spellTriggerText.get(spellTrigger[i]), spellIdText.get(spellId[i])));
                 spell.getStyleClass().add("green");
-                item.add(spell, 0, row += 1);
+                Text.class.cast(spell).wrappingWidthProperty().bind(item.maxWidthProperty());
+                spell.maxHeight(100);
+                item.add(spell, 0, sameRow, 2, 1);
             }
         }
 
@@ -679,6 +692,7 @@ public class AppController
         }
 
         item.getStylesheets().add(getClass().getResource("preview.css").toString());
+        item.setMaxWidth(400);
 
         return true;
     }

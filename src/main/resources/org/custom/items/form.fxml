@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
@@ -8,143 +7,80 @@
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Text?>
 
-<GridPane fx:id="form" alignment="center" hgap="10" prefHeight="400.0" prefWidth="569.0" stylesheets="@form.css" vgap="10" xmlns="http://javafx.com/javafx/14" xmlns:fx="http://javafx.com/fxml/1">
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<GridPane fx:id="form" alignment="center" hgap="10" stylesheets="@form.css" vgap="10" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
-        <ColumnConstraints halignment="RIGHT" maxWidth="Infinity" minWidth="78.0" prefWidth="96.0" />
-        <ColumnConstraints hgrow="ALWAYS" maxWidth="Infinity" minWidth="73.0" prefWidth="222.0" />
-        <ColumnConstraints hgrow="ALWAYS" maxWidth="Infinity" minWidth="13.0" prefWidth="97.0" />
-        <ColumnConstraints hgrow="ALWAYS" maxWidth="Infinity" minWidth="38.0" prefWidth="72.0" />
+        <ColumnConstraints halignment="RIGHT" percentWidth="0.0" prefWidth="75.0" />
+        <ColumnConstraints percentWidth="0.0" />
+        <ColumnConstraints percentWidth="0.0" prefWidth="75.0" />
+        <ColumnConstraints percentWidth="0.0" prefWidth="75.0" />
     </columnConstraints>
 
-    <Label text="New Item" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.rowSpan="1">
-        <font>
-            <Font name="Arial" size="24" />
-        </font>
-        <GridPane.margin>
-            <Insets bottom="20" left="0" right="0" top="20" />
-        </GridPane.margin>
-    </Label>
+    <ImageView onMouseClicked="#backToInventory" fitHeight="32.0" fitWidth="32.0" GridPane.halignment="LEFT" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+        <Image url="@back.png"/>
+    </ImageView>
 
-   <Label text="Custom Type" GridPane.columnIndex="1" GridPane.rowIndex="1">
-      <GridPane.margin>
-         <Insets left="70.0" />
-      </GridPane.margin>
-   </Label>
-   <RadioButton fx:id="pve" mnemonicParsing="false" text="PvE" onMouseClicked="#itemModifier" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2">
-      <padding>
-         <Insets left="150.0" />
-      </padding>
-      <toggleGroup>
-         <ToggleGroup fx:id="type" />
-      </toggleGroup>
-   </RadioButton>
-   <RadioButton fx:id="gold" mnemonicParsing="false" text="Gold" onMouseClicked="#itemModifier" toggleGroup="$type" GridPane.columnIndex="1" GridPane.rowIndex="2">
-      <GridPane.margin>
-         <Insets left="10.0" />
-      </GridPane.margin>
-   </RadioButton>
+    <Text id="formTitle" text="New Item" GridPane.columnSpan="4" GridPane.halignment="CENTER" />
+    <Text styleClass="sections" text="Custom" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+    <Text styleClass="sections" text="Type" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" />
+    <Text styleClass="sections" text="Spells" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+    <Text styleClass="subsections" text="IDs" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+    <Text styleClass="subsections" text="Triggers" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+
+    <RadioButton fx:id="gold" contentDisplay="CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onMouseClicked="#itemModifier" text="Gold" GridPane.rowIndex="2">
+        <toggleGroup>
+            <ToggleGroup fx:id="type" />
+        </toggleGroup>
+    </RadioButton>
+    <RadioButton fx:id="pve" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onMouseClicked="#itemModifier" text="PvE" toggleGroup="$type" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
     <Label text="Entry" GridPane.rowIndex="3" />
-    <TextField fx:id="entry" GridPane.rowIndex="4" />
-
-    <Label text="Name" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-    <TextField fx:id="name" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+    <TextField fx:id="entry" styleClass="left" GridPane.rowIndex="4" />
 
     <Label text="Quality" GridPane.rowIndex="5" />
-    <TextField fx:id="quality" GridPane.rowIndex="6" />
-
-    <Label text="Description" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-    <TextField fx:id="description" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+    <TextField fx:id="quality" styleClass="left" GridPane.rowIndex="6" />
 
     <Label text="Display ID" GridPane.rowIndex="7" />
-    <TextField fx:id="displayID" GridPane.rowIndex="8" />
+    <TextField fx:id="displayID" styleClass="left" GridPane.rowIndex="8" />
 
-    <Label text="Spells" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.halignment="CENTER" />
+    <Label text="Name" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+    <TextField fx:id="name" styleClass="right" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
-    <Label text="IDs" GridPane.columnIndex="2" GridPane.rowIndex="2" GridPane.halignment="CENTER" />
+    <Label text="Description" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+    <TextField fx:id="description" styleClass="right" GridPane.columnIndex="1" GridPane.rowIndex="6" />
 
-    <Label text="1" GridPane.columnIndex="2" GridPane.rowIndex="3">
-        <GridPane.margin>
-            <Insets left="10.0" />
-        </GridPane.margin>
-    </Label>
-    <TextField fx:id="spell1" GridPane.columnIndex="2" GridPane.rowIndex="3">
-        <GridPane.margin>
-            <Insets left="25.0" right="5.0" />
-        </GridPane.margin>
-    </TextField>
+    <TextField fx:id="spell1" styleClass="spell" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+    <TextField fx:id="trigger1" styleClass="trigger" GridPane.columnIndex="3" GridPane.rowIndex="3" />
 
-    <Label text="2" GridPane.columnIndex="2" GridPane.rowIndex="4">
-        <GridPane.margin>
-            <Insets left="10.0" />
-        </GridPane.margin>
-    </Label>
-    <TextField fx:id="spell2" GridPane.columnIndex="2" GridPane.rowIndex="4">
-        <GridPane.margin>
-            <Insets left="25.0" right="5.0" />
-        </GridPane.margin>
-    </TextField>
+    <TextField fx:id="spell2" styleClass="spell" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+    <TextField fx:id="trigger2" styleClass="trigger" GridPane.columnIndex="3" GridPane.rowIndex="4" />
 
-    <Label text="3" GridPane.columnIndex="2" GridPane.rowIndex="5">
-        <GridPane.margin>
-            <Insets left="10.0" />
-        </GridPane.margin>
-    </Label>
-    <TextField fx:id="spell3" GridPane.columnIndex="2" GridPane.rowIndex="5">
-        <GridPane.margin>
-            <Insets left="25.0" right="5.0" />
-        </GridPane.margin>
-    </TextField>
+    <TextField fx:id="spell3" styleClass="spell" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+    <TextField fx:id="trigger3" styleClass="trigger" GridPane.columnIndex="3" GridPane.rowIndex="5" />
 
-    <Label text="4" GridPane.columnIndex="2" GridPane.rowIndex="6">
-        <GridPane.margin>
-            <Insets left="10.0" />
-        </GridPane.margin>
-    </Label>
-    <TextField fx:id="spell4" GridPane.columnIndex="2" GridPane.rowIndex="6">
-        <GridPane.margin>
-            <Insets left="25.0" right="5.0" />
-        </GridPane.margin>
-    </TextField>
+    <TextField fx:id="spell4" styleClass="spell" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+    <TextField fx:id="trigger4" styleClass="trigger" GridPane.columnIndex="3" GridPane.rowIndex="6" />
 
-    <Label text="5" GridPane.columnIndex="2" GridPane.rowIndex="7">
-        <GridPane.margin>
-            <Insets left="10.0" />
-        </GridPane.margin>
-    </Label>
-    <TextField fx:id="spell5" GridPane.columnIndex="2" GridPane.rowIndex="7">
-        <GridPane.margin>
-            <Insets left="25.0" right="5.0" />
-        </GridPane.margin>
-    </TextField>
+    <TextField fx:id="spell5" styleClass="spell" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+    <TextField fx:id="trigger5" styleClass="trigger" GridPane.columnIndex="3" GridPane.rowIndex="7" />
 
-    <Label text="Triggers" GridPane.columnIndex="3" GridPane.rowIndex="2" GridPane.halignment="CENTER" />
+    <Button onAction="#create" prefHeight="40" text="Create Item" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+    <Button defaultButton="true" onAction="#preview" prefHeight="40" text="Preview Item" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="9" />
 
-    <TextField fx:id="trigger1" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-
-    <TextField fx:id="trigger2" GridPane.columnIndex="3" GridPane.rowIndex="4" />
-
-    <TextField fx:id="trigger3" GridPane.columnIndex="3" GridPane.rowIndex="5" />
-
-    <TextField fx:id="trigger4" GridPane.columnIndex="3" GridPane.rowIndex="6" />
-
-    <TextField fx:id="trigger5" GridPane.columnIndex="3" GridPane.rowIndex="7" />
-
-    <Button onAction="#create" defaultButton="false" prefHeight="40" text="Create Item" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="9" GridPane.rowSpan="1">
-        <GridPane.margin>
-            <Insets bottom="20" left="0" right="0" top="20" />
-        </GridPane.margin>
-    </Button>
-
-    <Button onAction="#preview" defaultButton="true" prefHeight="40" text="Preview Item" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="9" GridPane.rowSpan="1">
-        <GridPane.margin>
-            <Insets bottom="20" left="0" right="0" top="20" />
-        </GridPane.margin>
-    </Button>
-
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-    </padding>
+   <rowConstraints>
+      <RowConstraints percentHeight="0.0" />
+      <RowConstraints percentHeight="0.0" />
+      <RowConstraints percentHeight="0.0" />
+      <RowConstraints percentHeight="0.0" />
+      <RowConstraints percentHeight="0.0" />
+      <RowConstraints percentHeight="0.0" />
+      <RowConstraints percentHeight="0.0" />
+      <RowConstraints percentHeight="0.0" />
+      <RowConstraints percentHeight="0.0" />
+      <RowConstraints prefHeight="100.0" percentHeight="0.0" />
+   </rowConstraints>
 </GridPane>

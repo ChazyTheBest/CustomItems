@@ -15,8 +15,7 @@ public class DB
         StringBuilder url = new StringBuilder("jdbc:mysql://")
                                       .append(host).append(":")
                                       .append(port).append("/")
-                                      .append(dbname)
-                                      .append("?useTimezone=true&serverTimezone=UTC");
+                                      .append(dbname);
 
         connection = DriverManager.getConnection(url.toString(), user, pwd);
     }

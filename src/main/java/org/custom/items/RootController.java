@@ -1,5 +1,6 @@
 package org.custom.items;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.ImageCursor;
@@ -91,7 +92,7 @@ public class RootController extends BorderPane
     @FXML
     private void close(MouseEvent event)
     {
-        stage.close();
+        Platform.exit();
     }
 
     public void setTitle(String t)
