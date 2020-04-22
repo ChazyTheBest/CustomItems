@@ -33,9 +33,9 @@ public class AuthController
     AuthController(RootController r)
     {
         root = r;
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("auth.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("authForm.fxml"));
 
-        loader.setRoot(root.getCenter());
+        //loader.setRoot(root.getCenter());
         loader.setController(this);
 
         try

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+
+<VBox fx:id="welcome" alignment="CENTER" xmlns:fx="http://javafx.com/fxml/1">
+    <Text>Welcome to the WotG Custom Items Creator.</Text>
+    <Text>To begin, select a class and a spec.</Text>
+</VBox>

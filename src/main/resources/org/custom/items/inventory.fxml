@@ -1,29 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 
-<Pane fx:id="inventory" stylesheets="@inventory.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
-    <children>
-        <Button fx:id="slotHead" layoutX="106.0" onAction="#showForm" />
-        <Button fx:id="slotNeck" layoutX="106.0" layoutY="59.0" onAction="#showForm" />
-        <Button fx:id="slotShoulders" layoutX="106.0" layoutY="118.0" onAction="#showForm" />
-        <Button fx:id="slotBack" layoutX="106.0" layoutY="177.0" onAction="#showForm" />
-        <Button fx:id="slotChest" layoutX="106.0" layoutY="236.0" onAction="#showForm" />
-        <Button fx:id="slotShirt" layoutX="106.0" layoutY="295.0" onAction="#showForm" />
-        <Button fx:id="slotTabard" layoutX="106.0" layoutY="354.0" onAction="#showForm" />
-        <Button fx:id="slotWrist" layoutX="106.0" layoutY="413.0" onAction="#showForm" />
-        <Button fx:id="slotHands" layoutX="506.0" onAction="#showForm" />
-        <Button fx:id="slotWaist" layoutX="506.0" layoutY="59.0" onAction="#showForm" />
-        <Button fx:id="slotLegs" layoutX="506.0" layoutY="118.0" onAction="#showForm" />
-        <Button fx:id="slotFeet" layoutX="506.0" layoutY="177.0" onAction="#showForm" />
-        <Button fx:id="slotFinger1" layoutX="506.0" layoutY="236.0" onAction="#showForm" />
-        <Button fx:id="slotFinger2" layoutX="506.0" layoutY="295.0" onAction="#showForm" />
-        <Button fx:id="slotTrinket1" layoutX="506.0" layoutY="354.0" onAction="#showForm" />
-        <Button fx:id="slotTrinket2" layoutX="506.0" layoutY="413.0" onAction="#showForm" />
-        <Button fx:id="slotMainHand" layoutX="242.0" layoutY="490.0" onAction="#showForm" />
-        <Button fx:id="slotOffHand" layoutX="301.0" layoutY="490.0" onAction="#showForm" />
-        <Button fx:id="slotRanged" layoutX="360.0" layoutY="490.0" onAction="#showForm" />
-        <Button fx:id="slotBag" layoutX="633.0" layoutY="199.0" onAction="#showForm" />
-    </children>
-</Pane>
+
+<GridPane fx:id="inventory" alignment="CENTER" hgap="10.0" vgap="10.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1">
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" percentWidth="0.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" percentWidth="0.0" prefWidth="100.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" percentWidth="0.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" percentWidth="0.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" percentWidth="0.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" percentWidth="0.0" prefWidth="100.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" percentWidth="0.0"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints percentHeight="0.0" vgrow="SOMETIMES"/>
+        <RowConstraints percentHeight="0.0" vgrow="SOMETIMES"/>
+        <RowConstraints percentHeight="0.0" vgrow="SOMETIMES"/>
+        <RowConstraints percentHeight="0.0" vgrow="SOMETIMES"/>
+        <RowConstraints percentHeight="0.0" vgrow="SOMETIMES"/>
+        <RowConstraints percentHeight="0.0" vgrow="SOMETIMES"/>
+        <RowConstraints percentHeight="0.0" vgrow="SOMETIMES"/>
+        <RowConstraints percentHeight="0.0" vgrow="SOMETIMES"/>
+        <RowConstraints percentHeight="0.0" vgrow="SOMETIMES"/>
+    </rowConstraints>
+    <ImageView styleClass="slot" userData="slotHead" fitHeight="47.0" fitWidth="47.0" onMouseClicked="#showForm" pickOnBounds="true" preserveRatio="true">
+        <Image url="@Slots/slotHead.png"/>
+    </ImageView>
+    <ImageView styleClass="slot" userData="slotNeck" fitHeight="47.0" fitWidth="47.0" onMouseClicked="#showForm" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1">
+        <Image url="@Slots/slotNeck.png"/>
+    </ImageView>
+    <ImageView styleClass="slot" userData="slotShoulders" fitHeight="47.0" fitWidth="47.0" onMouseClicked="#showForm" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2">
+        <Image url="@Slots/slotShoulders.png"/>
+    </ImageView>
+    <ImageView styleClass="slot" userData="slotBack" fitHeight="47.0" fitWidth="47.0" onMouseClicked="#showForm" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="3">
+        <Image url="@Slots/slotBackChest.png"/>
+    </ImageView>
+    <ImageView styleClass="slot" userData="slotChest" fitHeight="47.0" fitWidth="47.0" onMouseClicked="#showForm" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="4">
+        <Image url="@Slots/slotBackChest.png"/>
+    </ImageView>
+    <ImageView styleClass="slot" userData="slotShirt" fitHeight="47.0" fitWidth="47.0" onMouseClicked="#showForm" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="5">
+        <Image url="@Slots/slotShirt.png"/>
+    </ImageView>
+    <ImageView styleClass="slot" userData="slotTabard" fitHeight="47.0" fitWidth="47.0" onMouseClicked="#showForm" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="6">
+        <Image url="@Slots/slotTabard.png"/>
+    </ImageView>
+    <ImageView styleClass="slot" userData="slotWrist" fitHeight="47.0" fitWidth="47.0" onMouseClicked="#showForm" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="7">
+        <Image url="@Slots/slotWrist.png"/>
+    </ImageView>
+    <ImageView styleClass="slot" userData="slotHands" fitHeight="47.0" fitWidth="47.0" onMouseClicked="#showForm" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6">
+        <Image url="@Slots/slotHands.png"/>
+    </ImageView>
+    <ImageView styleClass="slot" userData="slotWaist" fitHeight="47.0" fitWidth="47.0" onMouseClicked="#showForm" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6" GridPane.rowIndex="1">
+        <Image url="@Slots/slotWaist.png"/>
+    </ImageView>
+    <ImageView styleClass="slot" userData="slotLegs" fitHeight="47.0" fitWidth="47.0" onMouseClicked="#showForm" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6" GridPane.rowIndex="2">
+        <Image url="@Slots/slotLegs.png"/>
+    </ImageView>
+    <ImageView styleClass="slot" userData="slotFeet" fitHeight="47.0" fitWidth="47.0" onMouseClicked="#showForm" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6" GridPane.rowIndex="3">
+        <Image url="@Slots/slotFeet.png"/>
+    </ImageView>
+    <ImageView styleClass="slot" userData="slotFinger1" fitHeight="47.0" fitWidth="47.0" onMouseClicked="#showForm" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6" GridPane.rowIndex="4">
+        <Image url="@Slots/slotFinger.png"/>
+    </ImageView>
+    <ImageView styleClass="slot" userData="slotFinger2" fitHeight="47.0" fitWidth="47.0" onMouseClicked="#showForm" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6" GridPane.rowIndex="5">
+        <Image url="@Slots/slotFinger.png"/>
+    </ImageView>
+    <ImageView styleClass="slot" userData="slotTrinket1" fitHeight="47.0" fitWidth="47.0" onMouseClicked="#showForm" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6" GridPane.rowIndex="6">
+        <Image url="@Slots/slotTrinket.png"/>
+    </ImageView>
+    <ImageView styleClass="slot" userData="slotTrinket2" fitHeight="47.0" fitWidth="47.0" onMouseClicked="#showForm" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6" GridPane.rowIndex="7">
+        <Image url="@Slots/slotTrinket.png"/>
+    </ImageView>
+    <ImageView styleClass="slot" userData="slotMainHand" fitHeight="47.0" fitWidth="47.0" onMouseClicked="#showForm" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="8">
+        <Image url="@Slots/slotMainHand.png"/>
+    </ImageView>
+    <ImageView styleClass="slot" userData="slotOffHand" fitHeight="47.0" fitWidth="47.0" onMouseClicked="#showForm" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.rowIndex="8">
+        <Image url="@Slots/slotOffHand.png"/>
+    </ImageView>
+    <ImageView styleClass="slot" userData="slotRanged" fitHeight="47.0" fitWidth="47.0" onMouseClicked="#showForm" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4" GridPane.rowIndex="8">
+        <Image url="@Slots/slotRanged.png"/>
+    </ImageView>
+    <ImageView styleClass="slot" userData="slotBag" fitHeight="47.0" fitWidth="47.0" onMouseClicked="#showForm" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.rowIndex="5">
+        <Image url="@Slots/slotBag.png"/>
+    </ImageView>
+</GridPane>

@@ -1,39 +1,29 @@
 package org.custom.items;
 
-import java.io.IOException;
 import java.util.*;
-import java.util.stream.Stream;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Control;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.converter.IntegerStringConverter;
 
 public class AppController
 {
-    @FXML private BorderPane appBody;
-    @FXML private VBox content;
-    @FXML private Button closePreview;
+    @FXML private VBox welcome;
+    @FXML private GridPane classes, inventory, itemForm;
     @FXML private RadioButton gold, pve;
-    @FXML private Pane inventory, previewBody;
-    @FXML private GridPane form;
     @FXML private ToggleGroup type;
     @FXML private TextField
 
@@ -54,52 +44,56 @@ public class AppController
                     trigger5;
 
     private final RootController root;
-    private final TreeMap<String, VBox> tabs = new TreeMap<String, VBox>();
-    private final TreeMap<String, CharacterInventory> classes = new TreeMap<String, CharacterInventory>();
-    private String previousClass, currentClass, currentSlot;
+    private final TreeMap<String, VBox> tabs = new TreeMap<String, VBox>(); // aka roles
+    private final TreeMap<String, CharacterInventory> characterInventoryTreeMap = new TreeMap<String, CharacterInventory>();
+    private final TreeMap<Integer, ItemTemplate> createdItems = new TreeMap<Integer, ItemTemplate>();
+    private String previousClass, currentClass;
+    private GridPane currentSelected;
     private ItemTemplate currentItem, currentItemCopy;
     private boolean success = false, preview = false;
     private final Stage previewStage = new Stage();
-    private String clicked;
-    private final GridPane item = new GridPane();
+    private final GridPane itemPreview = new GridPane();
+    private final Scene previewScene = new Scene(itemPreview);
 
 
-    AppController(RootController r) throws IOException
+    AppController(RootController r)
     {
         root = r;
-        FXMLLoader appLoader        = new FXMLLoader(getClass().getResource("app.fxml")), // primaryStage
-                   inventoryLoader  = new FXMLLoader(getClass().getResource("inventory.fxml")), // app.fxml Vbox id=content
-                   formLoader       = new FXMLLoader(getClass().getResource("form.fxml")); // secondaryStage
+    }
 
-        root.setCenter(null);
-        appLoader.setRoot(root.getCenter());
-        appLoader.setController(this);
+    private void loader(String name, Node parent)
+    {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(name + ".fxml"));
 
-        inventoryLoader.setRoot(content);
-        inventoryLoader.setController(this);
-
-        formLoader.setRoot(content);
-        formLoader.setController(this);
+        //loader.setRoot(parent);
+        loader.setController(this);
 
         try
         {
-            appLoader.load();
-            inventoryLoader.load();
-            formLoader.load();
+            loader.load();
         }
 
         catch (Exception e)
         {
-            System.out.println("Error loading the interface");
-            //e.printStackTrace();
+            System.out.println("Error loading interface file: " + name);
+            e.printStackTrace();
         }
     }
 
     public void displayAppWindow(Stage s)
     {
         s.hide();
-        root.setCenter(appBody);
-        s.show();
+
+        root.setCenter(null);
+        loader("welcome", root.getCenter());
+        loader("classes", root.getBottom());
+        loader("inventory", root.getLeft());
+        loader("itemForm", root.getRight());
+
+        root.getStyleClass().add("rootBG");
+        root.setCenter(welcome);
+        root.setBottom(classes);
+        root.setCenter(welcome);
 
         Properties roles = new Properties();
 
@@ -122,18 +116,19 @@ public class AppController
                 classRoles[i] = classRoles[i].trim();
             }
 
-            tabs.put(key, new VBox());
+            VBox vbox = new VBox();
+            Text selectText = new Text("Select the type of items you want to create:");
 
-            tabs.get(key).getChildren().add(new Text("Create new custom items for class: " + key));
-            tabs.get(key).getChildren().add(new Text("Select donor gear based on role to use as a base:"));
-
-            int index = 2;
+            vbox.setAlignment(Pos.CENTER);
+            vbox.getChildren().add(selectText);
 
             for (String role : classRoles)
             {
                 Node l = new Label(role.toUpperCase());
 
                 l.getStyleClass().add("role");
+                l.setCursor(root.getMouseCursorGossip());
+                l.setOnMouseClicked(e -> showInventory(key, role));
 
                 switch (role)
                 {
@@ -144,89 +139,148 @@ public class AppController
                     case "ranged": l.getStyleClass().add("dps");
                 }
 
-                tabs.get(key).getChildren().add(l);
-                tabs.get(key).getStylesheets().add(getClass().getResource("roles.css").toString());
-                tabs.get(key).getChildren().get(index).setOnMouseClicked(e -> showItemPicker(key, role));
-                index++;
+                vbox.getChildren().add(l);
             }
+
+            tabs.put(key, vbox);
         }
 
-        //status.setText("DB Status: Connected");
+        for (Node node : classes.getChildren())
+        {
+            node.setCursor(root.getMouseCursorAttack());
+        }
+
+        for (Node node : inventory.getChildren())
+        {
+            node.setCursor(root.getMouseCursorGlow());
+        }
+
+        itemForm.getChildren().get(0).setCursor(root.getMouseCursorGossip());
+        itemForm.getChildren().get(7).setCursor(root.getMouseCursorGlow());
+        itemForm.getChildren().get(8).setCursor(root.getMouseCursorGlow());
+        itemForm.getChildren().get(29).setCursor(root.getMouseCursorCreateOff());
+        itemForm.getChildren().get(30).setCursor(root.getMouseCursorPreviewOff());
+
+        spell1.setCursor(root.getMouseCursorWheel());
+        spell2.setCursor(root.getMouseCursorWheel());
+        spell3.setCursor(root.getMouseCursorWheel());
+        spell4.setCursor(root.getMouseCursorWheel());
+        spell5.setCursor(root.getMouseCursorWheel());
+        trigger1.setCursor(root.getMouseCursorWheel());
+        trigger2.setCursor(root.getMouseCursorWheel());
+        trigger3.setCursor(root.getMouseCursorWheel());
+        trigger4.setCursor(root.getMouseCursorWheel());
+        trigger5.setCursor(root.getMouseCursorWheel());
+
+        entry.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
+        quality.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
+        displayID.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
+        spell1.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
+        spell2.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
+        spell3.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
+        spell4.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
+        spell5.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
+        trigger1.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
+        trigger2.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
+        trigger3.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
+        trigger4.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
+        trigger5.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
+
+        s.show();
     }
 
     @FXML
-    private void showRoles(MouseEvent event) throws Exception
+    private void showRoles(MouseEvent event)
     {
-        content.getChildren().clear();
-        content.getChildren().add(tabs.get(((Control) event.getSource()).getId()));
-        success = false;
+        if (currentSelected != null)
+        {
+            currentSelected.getStyleClass().removeAll("selected");
+        }
 
+        currentSelected = (GridPane) event.getSource();
+        event.consume();
+
+        currentSelected.getStyleClass().add("selected");
+
+        previewStage.close();
         gold.setSelected(false);
         pve.setSelected(false);
+        success = false;
 
-        closePreview();
+        root.setCenter(tabs.get(currentSelected.getUserData().toString()));
     }
 
-    private void showItemPicker(String c, String r)
+    private void showInventory(String c, String r)
     {
-        content.getChildren().clear();
-
         String key = c + "_" + r;
 
-        if (!classes.containsKey(key))
+        if (!characterInventoryTreeMap.containsKey(key))
         {
-            classes.put(key, new CharacterInventory());
-            classes.get(key).getEntries(key + ".conf");
+            try
+            {
+                characterInventoryTreeMap.put(key, new CharacterInventory());
+                characterInventoryTreeMap.get(key).getEntries(key + ".conf");
+            }
+
+            catch (Exception e)
+            {
+                UX.showAlert(Alert.AlertType.ERROR, "Filesystem error", e.toString());
+                return;
+            }
         }
 
         previousClass = currentClass != null && !currentClass.isEmpty() ? currentClass : "";
         currentClass = key;
 
-        content.getChildren().add(inventory);
+        root.setCenter(inventory);
     }
 
     @FXML
-    private void showForm(ActionEvent event)
+    private void showForm(MouseEvent event)
     {
-        clicked = "";
-        currentSlot = ((Control) event.getSource()).getId();
+        String slotName = ((ImageView) event.getSource()).getUserData().toString();
 
-        try
+        event.consume();
+
+        if (characterInventoryTreeMap.get(currentClass).checkSlot(slotName))
         {
-            currentItem = classes.get(currentClass).getSlot(currentSlot);
+            currentItem = characterInventoryTreeMap.get(currentClass).getSlot(slotName);
+            currentItemCopy = characterInventoryTreeMap.get(currentClass).getSlotCopy(slotName);
         }
 
-        catch (Exception e)
+        else
         {
-            UX.showAlert(Alert.AlertType.ERROR, "SQL Exception!", e.getMessage());
-            //e.printStackTrace();
-            return;
+            try
+            {
+                characterInventoryTreeMap.get(currentClass).setSlot(slotName);
+            }
+
+            catch (Exception e)
+            {
+                UX.showAlert(Alert.AlertType.ERROR, "SQL Exception!", e.getMessage());
+                return;
+            }
+
+            currentItem = characterInventoryTreeMap.get(currentClass).getSlot(slotName);
+            currentItemCopy = characterInventoryTreeMap.get(currentClass).getSlotCopy(slotName);
+
+            currentItemCopy.setEntry(currentItem.getEntry());
+            currentItemCopy.setArmor(currentItem.getArmor());
+            currentItemCopy.setBlock(currentItem.getBlock());
+
+            System.arraycopy(currentItem.getStat_value(), 0, currentItemCopy.getStat_value(), 0, 10);
+            System.arraycopy(currentItem.getDmg_min(), 0, currentItemCopy.getDmg_min(), 0, 2);
+            System.arraycopy(currentItem.getDmg_max(), 0, currentItemCopy.getDmg_max(), 0, 2);
+
+            currentItemCopy.getSocketColor()[0] = currentItem.getSocketColor()[0];
         }
 
-        currentItemCopy = new ItemTemplate();
-
-        currentItemCopy.setArmor(currentItem.getArmor());
-        currentItemCopy.setBlock(currentItem.getBlock());
-
-        String stats[] = currentItem.getStat_value();
-        String statsCopy[] = currentItemCopy.getStat_value();
-
-        for (int i = 0; i < 10; i++)
-        {
-            statsCopy[i] = stats[i];
-        }
-
-        currentItemCopy.setDmg_min1(currentItem.getDmg_min1());
-        currentItemCopy.setDmg_max1(currentItem.getDmg_max1());
-        currentItemCopy.setDmg_min2(currentItem.getDmg_min2());
-        currentItemCopy.setDmg_max2(currentItem.getDmg_max2());
-        currentItemCopy.setSocketColor_1(currentItem.getSocketColor_1());
-
-        String id, n, d;
+        int id;
+        String n, d;
 
         if (!previousClass.isEmpty() && previousClass.equals(currentClass) && success)
         {
-            id = !entry.getText().isEmpty() ? (1 + Integer.parseInt(entry.getText())) + "" : currentItem.getEntry();
+            id = !entry.getText().isEmpty() ? (1 + Integer.parseInt(entry.getText())) : currentItem.getEntry();
             n = !name.getText().isEmpty() ? name.getText() : currentItem.getName();
             d = !description.getText().isEmpty() ? description.getText() : currentItem.getDescription();
         }
@@ -238,242 +292,286 @@ public class AppController
             d = currentItem.getDescription();
         }
 
-        entry.setText(id);
+        entry.setText(String.valueOf(id));
         name.setText(n);
-        quality.setText(currentItem.getQuality());
+        quality.setText(String.valueOf(currentItem.getQuality()));
         description.setText(d);
-        displayID.setText(currentItem.getDisplayid());
+        displayID.setText(String.valueOf(currentItem.getDisplayid()));
 
-        String spellId[] = currentItem.getSpellid(),
-               spellTrigger[] = currentItem.getSpelltrigger();
+        int spellId[] = currentItem.getSpellid(),
+            spellTrigger[] = currentItem.getSpelltrigger();
 
-        spell1.setText(spellId[0]);
-        spell2.setText(spellId[1]);
-        spell3.setText(spellId[2]);
-        spell4.setText(spellId[3]);
-        spell5.setText(spellId[4]);
-        trigger1.setText(spellTrigger[0]);
-        trigger2.setText(spellTrigger[1]);
-        trigger3.setText(spellTrigger[2]);
-        trigger4.setText(spellTrigger[3]);
-        trigger5.setText(spellTrigger[4]);
+        spell1.setText(String.valueOf(spellId[0]));
+        spell2.setText(String.valueOf(spellId[1]));
+        spell3.setText(String.valueOf(spellId[2]));
+        spell4.setText(String.valueOf(spellId[3]));
+        spell5.setText(String.valueOf(spellId[4]));
+        trigger1.setText(String.valueOf(spellTrigger[0]));
+        trigger2.setText(String.valueOf(spellTrigger[1]));
+        trigger3.setText(String.valueOf(spellTrigger[2]));
+        trigger4.setText(String.valueOf(spellTrigger[3]));
+        trigger5.setText(String.valueOf(spellTrigger[4]));
 
-        content.getChildren().clear();
-        content.getChildren().add(form);
+        root.setCenter(itemForm);
     }
 
     @FXML
-    private void backToInventory(MouseEvent event)
+    private void handleFormClicks(MouseEvent event)
+    {
+        MouseButton button = event.getButton();
+
+        if (button == MouseButton.PRIMARY)
+        {
+            root.requestFocus();
+        }
+
+        else if (button == MouseButton.BACK)
+        {
+            backToInventory();
+        }
+    };
+
+    @FXML
+    private void backToInventory()
     {
         gold.setSelected(false);
         pve.setSelected(false);
-        closePreview();
-        content.getChildren().clear();
-        content.getChildren().add(inventory);
+        itemForm.getChildren().get(29).setCursor(root.getMouseCursorCreateOff());
+        itemForm.getChildren().get(30).setCursor(root.getMouseCursorPreviewOff());
+        previewStage.close();
+        root.setCenter(inventory);
     }
 
     @FXML
-    private void itemModifier(MouseEvent event)
+    private void itemModifier()
     {
         RadioButton rb = (RadioButton) type.getSelectedToggle();
-
-        if (rb == null)
-        {
-            UX.showAlert(Alert.AlertType.ERROR, "Form Error!", "Please select an item type (Gold or PvE).");
-            return;
-        }
-
         double mod = 0;
 
-        if (rb.getId().equals("gold") && !clicked.equals("gold"))
+        if (rb.getId().equals("gold"))
         {
-            clicked = "gold";
-
             // +10% to stats
             mod = 1.1;
 
             // revert back to base socketColor
-            currentItem.setSocketColor_1(currentItemCopy.getSocketColor_1());
+            currentItem.getSocketColor()[0] = currentItemCopy.getSocketColor()[0];
         }
 
-        else if (rb.getId().equals("pve") && !clicked.equals("pve"))
+        else if (rb.getId().equals("pve"))
         {
-            clicked = "pve";
-
             // +50% to stats
             mod = 1.5;
 
             // no meta socket for containers
-            if (!currentItem.getClas().equals("1"))
+            if (currentItem.getClas() != 1)
             {
                 // pve items get 1 meta socket
-                currentItem.setSocketColor_1("1");
+                currentItem.getSocketColor()[0] = 1;
             }
         }
 
         if (mod != 0)
         {
             // armor value
-            currentItem.setArmor(Integer.toString(Double.valueOf(mod * Integer.parseInt(currentItemCopy.getArmor())).intValue()));
+            currentItem.setArmor(Double.valueOf(mod * currentItemCopy.getArmor()).intValue());
 
             // block value
-            currentItem.setBlock(Integer.toString(Double.valueOf(mod * Integer.parseInt(currentItemCopy.getBlock())).intValue()));
+            currentItem.setBlock(Double.valueOf(mod * currentItemCopy.getBlock()).intValue());
 
-            int stat_value[] = Stream.of(currentItemCopy.getStat_value()).mapToInt(Integer::parseInt).toArray();
+            int stat_value[] = currentItemCopy.getStat_value(),
+                currentStatValue[] = currentItem.getStat_value();
 
             for (int i = 0; i < 10; i++)
             {
-                currentItem.setStat_value(i, Integer.toString(Double.valueOf(mod * stat_value[i]).intValue()));
+                currentStatValue[i] = Double.valueOf(mod * stat_value[i]).intValue();
             }
 
             // if weapon
-            if (currentItem.getClas().equals("2"))
+            if (currentItem.getClas() == 2)
             {
-                currentItem.setDmg_min1(Integer.toString(Double.valueOf(mod * Integer.parseInt(currentItemCopy.getDmg_min1())).intValue()));
-                currentItem.setDmg_max1(Integer.toString(Double.valueOf(mod * Integer.parseInt(currentItemCopy.getDmg_max1())).intValue()));
-                currentItem.setDmg_min2(Integer.toString(Double.valueOf(mod * Integer.parseInt(currentItemCopy.getDmg_min2())).intValue()));
-                currentItem.setDmg_max2(Integer.toString(Double.valueOf(mod * Integer.parseInt(currentItemCopy.getDmg_max2())).intValue()));
+                double min[] = currentItem.getDmg_min(),
+                       max[] = currentItem.getDmg_max(),
+                       minCopy[] = currentItemCopy.getDmg_min(),
+                       maxCopy[] = currentItemCopy.getDmg_max();
+
+                for (int i = 0; i < 2; i++)
+                {
+                    min[i] = mod * minCopy[i];
+                    max[i] = mod * maxCopy[i];
+                }
             }
 
-            itemPreview();
+            try
+            {
+                itemPreview();
+            }
+
+            catch (Exception e)
+            {
+                UX.showAlert(Alert.AlertType.ERROR, "Form Error!", e.getMessage());
+            }
         }
+
+        itemForm.getChildren().get(29).setCursor(root.getMouseCursorCreate());
+        itemForm.getChildren().get(30).setCursor(root.getMouseCursorPreview());
     }
 
     @FXML
-    private void preview(ActionEvent event)
+    private void preview()
     {
-        if (!itemPreview())
+        try
         {
+            itemPreview();
+        }
+
+        catch (Exception e)
+        {
+            UX.showAlert(Alert.AlertType.ERROR, "Form Error!", e.getMessage());
             return;
         }
 
         if (!preview)
         {
-            initPreview();
+            RootController PreviewRoot = new RootController();
+            PreviewRoot.setStage(previewStage);
+
+            itemPreview.setId("itemPreview");
+            itemPreview.setOnMousePressed(PreviewRoot::pressed);
+            itemPreview.setOnMouseDragged(PreviewRoot::dragged);
+
+            previewScene.setCursor(root.getMouseCursor());
+
+            previewStage.initStyle(StageStyle.UNDECORATED);
+            previewStage.getIcons().add(root.getLogo());
+            previewStage.setTitle("Item Preview");
+            previewStage.setScene(previewScene);
+            previewStage.show();
+
+            preview = true; // won't get executed again
         }
 
         else
         {
-            previewStage.hide();
+            previewStage.close();
             previewStage.show();
         }
     }
 
-    private void initPreview()
-    {
-        RootController PreviewRoot = new RootController();
-        PreviewRoot.setStage(previewStage);
-
-        item.setOnMousePressed(PreviewRoot::pressed);
-        item.setOnMouseDragged(PreviewRoot::dragged);
-
-        Scene scene = new Scene(item);
-        scene.setCursor(root.getMouse());
-
-        previewStage.initStyle(StageStyle.UNDECORATED);
-        previewStage.getIcons().add(root.getLogo());
-        previewStage.setTitle("Item Preview");
-        previewStage.setScene(scene);
-        previewStage.show();
-
-        preview = true;
-    }
-
     @FXML
-    private void closePreview()
+    private void create()
     {
-        previewStage.close();
-    }
-
-    @FXML
-    private void create (ActionEvent event) throws Exception
-    {
-        if (!setFields(false))
+        try
         {
+            setFields(false);
+        }
+
+        catch (Exception e)
+        {
+            UX.showAlert(Alert.AlertType.ERROR, "Form Error!", e.getMessage());
             return;
         }
 
-        if (currentItem.createItem())
+        try
         {
-            gold.setSelected(false);
-            pve.setSelected(false);
-
+            currentItem.createItem();
+            createdItems.put(currentItem.getEntry(), currentItem);
             success = true;
-            closePreview();
-
-            content.getChildren().clear();
-            content.getChildren().add(inventory);
         }
 
-        else
+        catch (Exception e)
         {
             success = false;
+            UX.showAlert(Alert.AlertType.ERROR, "SQL Exception!", e.getMessage());
+        }
+
+        finally
+        {
+            backToInventory();
         }
     }
 
-    private boolean setFields(boolean isPreview)
+    private void setFields(boolean isPreview) throws Exception
     {
         RadioButton rb = (RadioButton) type.getSelectedToggle();
 
         if (rb == null)
         {
-            UX.showAlert(Alert.AlertType.ERROR, "Form Error!", "Please select an item type (Gold or PvE).");
-            return false;
+            throw new Exception("Please select an item type (Gold or PvE).");
         }
 
-        if (!isPreview && entry.getText().equals(currentItem.getBaseEntry()))
+        if (!isPreview && entry.getText().equals(String.valueOf(currentItemCopy.getEntry())))
         {
-            UX.showAlert(Alert.AlertType.ERROR, "Form Error!", "Base entry shouldn't be overwritten, please use a different one.");
-            return false;
+            throw new Exception("Base entry shouldn't be overwritten, please use a different one.");
         }
 
-        currentItem.setEntry(entry.getText());
-        currentItem.setName(name.getText());
-        currentItem.setQuality(quality.getText());
-        currentItem.setDescription(description.getText());
-        currentItem.setDisplayid(displayID.getText());
-
-        String spells[] = { spell1.getText(), spell2.getText(), spell3.getText(), spell4.getText(), spell5.getText() },
-               spellId[] = currentItem.getSpellid();
-
-        System.arraycopy(spells, 0, spellId, 0, 5);
-
-        String triggers[] = { trigger1.getText(), trigger2.getText(), trigger3.getText(), trigger4.getText(), trigger5.getText() },
-               spellTrigger[] = currentItem.getSpelltrigger();
-
-        Map<Integer, String> check = ItemPreview.getSpellTrigger();
-
-        for (int i = 0; i < 5; i++)
+        try
         {
-            if (check.containsKey(Integer.parseInt(triggers[i])))
+            currentItem.setName(name.getText());
+            currentItem.setDescription(description.getText());
+            currentItem.setEntry(Integer.parseInt(entry.getText()));
+            currentItem.setQuality(Integer.parseInt(quality.getText()));
+            currentItem.setDisplayid(Integer.parseInt(displayID.getText()));
+
+            int spells[] =
+            {
+                Integer.parseInt(spell1.getText()),
+                Integer.parseInt(spell2.getText()),
+                Integer.parseInt(spell3.getText()),
+                Integer.parseInt(spell4.getText()),
+                Integer.parseInt(spell5.getText())
+            };
+
+            System.arraycopy(spells, 0, currentItem.getSpellid(), 0, 5);
+
+            int triggers[] =
+            {
+                Integer.parseInt(trigger1.getText()),
+                Integer.parseInt(trigger2.getText()),
+                Integer.parseInt(trigger3.getText()),
+                Integer.parseInt(trigger4.getText()),
+                Integer.parseInt(trigger5.getText())
+            };
+
+            int spellTrigger[] = currentItem.getSpelltrigger();
+            Map<Integer, String> check = ItemPreview.getSpellTrigger();
+
+            for (int i = 0; i < 5; i++)
             {
                 spellTrigger[i] = triggers[i];
-            }
 
-            else
-            {
-                UX.showAlert(Alert.AlertType.ERROR, "Form Error!", "The spell trigger is not valid.\n\nValid values are:\n0 (Use), 1 (Equip), 2 (Chance on hit), 4 (Soulstone), 5 (Use with no delay) and 6 (Learn Spell ID)");
-                return false;
+                if (!check.containsKey(triggers[i]))
+                {
+                    throw new Exception("The spell trigger is not valid.\n\nValid values are:\n0 (Use), 1 (Equip), 2 (Chance on hit), 4 (Soulstone), 5 (Use with no delay) and 6 (Learn Spell ID)");
+                }
             }
         }
 
-        return true;
+        catch (NumberFormatException e)
+        {
+            throw new Exception("Only numbers allowed!");
+        }
     }
 
-    private boolean itemPreview()
+    private void itemPreview() throws Exception
     {
-        if (!setFields(true))
+        try
         {
-            return false;
+            setFields(true);
+        }
+
+        catch (Exception e)
+        {
+            throw new Exception(e.getMessage());
         }
 
         int row = 0;
 
-        item.getChildren().clear();
+        itemPreview.getChildren().clear();
 
         String itemName = currentItem.getName();
-        Node name;
+        Text name;
 
+        // TODO: implement more than one color
         if (itemName.startsWith("|cff"))
         {
             name = new Text(itemName.substring(10));
@@ -487,115 +585,114 @@ public class AppController
 
         name.getStyleClass().add("itemName");
 
-        item.add(name, 0, row, 2, 1);
+        itemPreview.add(name, 0, row, 2, 1);
 
         // item bonding
-        if (ItemPreview.getBonding().containsKey(Integer.parseInt(currentItem.getBonding())))
+        if (ItemPreview.getBonding().containsKey(currentItem.getBonding()))
         {
-            Node bonding = new Text(ItemPreview.getBonding().get(Integer.parseInt(currentItem.getBonding())));
-            item.add(bonding, 0, row += 1);
+            Text bonding = new Text(ItemPreview.getBonding().get(currentItem.getBonding()));
+            itemPreview.add(bonding, 0, row += 1);
         }
 
         // item maxcount
-        if (!currentItem.getMaxcount().equals("0"))
+        if (currentItem.getMaxcount() != 0)
         {
-            Node unique = new Text(String.format("Unique (%s)", currentItem.getMaxcount()));
-            item.add(unique, 0, row += 1);
+            Text unique = new Text(String.format("Unique (%d)", currentItem.getMaxcount()));
+            itemPreview.add(unique, 0, row += 1);
         }
 
         // container slots
-        if (currentItem.getClas().equals("1") && currentItem.getSubclass().equals("0"))
+        if (currentItem.getClas() == 1 && currentItem.getSubclass() == 0)
         {
             // it's a bag
-            Node slots = new Text(String.format("%s Slot Bag", currentItem.getContainerSlots()));
-            item.add(slots, 0, row += 1);
+            Text slots = new Text(String.format("%d Slot Bag", currentItem.getContainerSlots()));
+            itemPreview.add(slots, 0, row += 1);
         }
 
         // it's a weapon
-        else if (currentItem.getClas().equals("2"))
+        else if (currentItem.getClas() == 2)
         {
-            int wRow = row += 1,
-                    dRow = row += 1,
-                    min1 = Integer.parseInt(currentItem.getDmg_min1()),
-                    max1 = Integer.parseInt(currentItem.getDmg_max1()),
+            int     wRow = row += 1,
+                    dRow = row += 1;
+            double  min1 = currentItem.getDmg_min()[0],
+                    max1 = currentItem.getDmg_max()[0],
                     min = min1,
-                    max = max1;
+                    max = max1,
+                    min2 = currentItem.getDmg_min()[1],
+                    max2 = currentItem.getDmg_min()[1];
 
-            double del = Integer.parseInt(currentItem.getDelay()) / 1000.0;
+            double del = currentItem.getDelay() / 1000.0;
 
-            Node wType = new Text(ItemPreview.getInventoryType().get(Integer.parseInt(currentItem.getInventoryType()))),
-                    wName = new Text(ItemPreview.getWeaponNameSubClass().get(Integer.parseInt(currentItem.getSubclass()))),
-                    dmg = new Text(String.format("%d - %d Damage", min1, max1)),
+            Text wType = new Text(ItemPreview.getInventoryType().get(currentItem.getInventoryType())),
+                    wName = new Text(ItemPreview.getWeaponNameSubClass().get(currentItem.getSubclass())),
+                    dmg = new Text(String.format("%.0f - %.0f Damage", min1, max1)),
                     delay = new Text(String.format("Speed %.2f", del));
 
-            item.add(wType, 0, wRow);
-            item.add(wName, 1, wRow);
-            item.add(dmg, 0, dRow);
-            item.add(delay, 1, dRow);
+            itemPreview.add(wType, 0, wRow);
+            itemPreview.add(wName, 1, wRow);
+            itemPreview.add(dmg, 0, dRow);
+            itemPreview.add(delay, 1, dRow);
 
             GridPane.setHalignment(wName, HPos.RIGHT);
             GridPane.setHalignment(delay, HPos.RIGHT);
 
-            if (!currentItem.getDmg_min2().equals("0") && !currentItem.getDmg_max2().equals("0"))
+            if (min2 != 0 && max2 != 0)
             {
-                int min2 = Integer.parseInt(currentItem.getDmg_min2()),
-                        max2 = Integer.parseInt(currentItem.getDmg_max2());
-
                 min += min2;
                 max += max2;
 
-                Node dmg2 = new Text(String.format("+%d - %d %s Damage", min2, max2, ItemPreview.getDmgType().get(Integer.parseInt(currentItem.getDmg_type2()))));
+                Text dmg2 = new Text(String.format("+%.0f - %.0f %s Damage", min2, max2, ItemPreview.getDmgType().get(currentItem.getDmg_type()[1])));
 
-                item.add(dmg2, 0, row += 1);
+                itemPreview.add(dmg2, 0, row += 1);
             }
 
-            Node wDps = new Text(String.format("(%.1f damage per second)", ((min + max) / 2) / del));
+            Text wDps = new Text(String.format("(%.1f damage per second)", ((min + max) / 2) / del));
 
-            item.add(wDps, 0, row += 1);
+            itemPreview.add(wDps, 0, row += 1);
         }
 
         // it's armor
-        else if (currentItem.getClas().equals("4"))
+        else if (currentItem.getClas() == 4)
         {
             int aRow = row += 1;
 
-            Node aType = new Text(ItemPreview.getInventoryType().get(Integer.parseInt(currentItem.getInventoryType()))),
-                 aName = new Text(ItemPreview.getArmorTypeSubClass().get(Integer.parseInt(currentItem.getSubclass())));
+            Text aType = new Text(ItemPreview.getInventoryType().get(currentItem.getInventoryType())),
+                 aName = new Text(ItemPreview.getArmorTypeSubClass().get(currentItem.getSubclass()));
 
-            item.add(aType, 0, aRow);
-            item.add(aName, 1, aRow);
+            itemPreview.add(aType, 0, aRow);
+            itemPreview.add(aName, 1, aRow);
 
             GridPane.setHalignment(aName, HPos.RIGHT);
 
-            if (!currentItem.getArmor().equals("0"))
+            if (currentItem.getArmor() != 0)
             {
-                Node aValue = new Text(String.format("%s Armor", currentItem.getArmor()));
-                item.add(aValue, 0, row += 1);
+                Text aValue = new Text(String.format("%d Armor", currentItem.getArmor()));
+                itemPreview.add(aValue, 0, row += 1);
             }
 
-            if (!currentItem.getBlock().equals("0"))
+            if (currentItem.getBlock() != 0)
             {
-                Node bValue = new Text(String.format("%s Block", currentItem.getBlock()));
-                item.add(bValue, 0, row += 1);
+                Text bValue = new Text(String.format("%d Block", currentItem.getBlock()));
+                itemPreview.add(bValue, 0, row += 1);
             }
         }
 
-        int     stat_type[] = Stream.of(currentItem.getStat_type()).mapToInt(Integer::parseInt).toArray();
-        String stat_value[] = currentItem.getStat_value();
+        int  stat_type[] = currentItem.getStat_type();
+        int stat_value[] = currentItem.getStat_value();
         Map<Integer, String> stats = ItemPreview.getStatType();
-        List<Node> stuff = new ArrayList<Node>();
+        List<Text> stuff = new ArrayList<Text>();
 
         // item primary stats
         for (int i = 0; i < 10; i++)
         {
-            if (stats.containsKey(stat_type[i]) && !stat_value[i].equals("0"))
+            if (stats.containsKey(stat_type[i]) && stat_value[i] != 0)
             {
                 String line = String.format(stats.get(stat_type[i]), stat_value[i]);
-                Node text = new Text(line);
+                Text text = new Text(line);
 
                 if (line.charAt(0) == '+')
                 {
-                    item.add(text, 0, row += 1);
+                    itemPreview.add(text, 0, row += 1);
                 }
 
                 else
@@ -606,84 +703,60 @@ public class AppController
             }
         }
 
-        // socket color 1
-        if (!currentItem.getSocketColor_1().equals("0"))
+        int socketColor[] = currentItem.getSocketColor();
+
+        // socket color
+        for (int i = 0; i < 3; i++)
         {
-            int sameRow1 = row += 1;
-            String color1 = ItemPreview.getSocketColor().get(Integer.parseInt(currentItem.getSocketColor_1()));
-            Node sImg1 = new Label(),
-                 sText1 = new Text(String.format("      %s Socket", color1));
+            if (socketColor[i] != 0)
+            {
+                int sameRow = row += 1;
+                String color = ItemPreview.getSocketColor().get(socketColor[i]);
+                Label sImg = new Label();
+                Text sText = new Text(String.format("      %s Socket", color));
 
-            sImg1.getStyleClass().add("socket");
-            sImg1.setId(color1.toLowerCase() + "Socket");
-            sText1.getStyleClass().add("gray");
-            item.add(sImg1, 0, sameRow1);
-            item.add(sText1, 0, sameRow1);
-        }
+                sImg.getStyleClass().add("socket");
+                sImg.setId(color.toLowerCase() + "Socket");
+                sText.getStyleClass().add("gray");
 
-        // socket color 2
-        if (!currentItem.getSocketColor_2().equals("0"))
-        {
-            int sameRow2 = row += 1;
-            String color2 = ItemPreview.getSocketColor().get(Integer.parseInt(currentItem.getSocketColor_2()));
-            Node sImg2 = new Label(),
-                 sText2 = new Text(String.format("      %s Socket", color2));
-
-            sImg2.getStyleClass().add("socket");
-            sImg2.setId(color2.toLowerCase() + "Socket");
-            sText2.getStyleClass().add("gray");
-            item.add(sImg2, 0, sameRow2);
-            item.add(sText2, 0, sameRow2);
-        }
-
-        // socket color 3
-        if (!currentItem.getSocketColor_3().equals("0"))
-        {
-            int sameRow3 = row += 1;
-            String color3 = ItemPreview.getSocketColor().get(Integer.parseInt(currentItem.getSocketColor_3()));
-            Node sImg3 = new Label(),
-                 sText3 = new Text(String.format("      %s Socket", color3));
-
-            sImg3.getStyleClass().add("socket");
-            sImg3.setId(color3.toLowerCase() + "Socket");
-            sText3.getStyleClass().add("gray");
-            item.add(sImg3, 0, sameRow3);
-            item.add(sText3, 0, sameRow3);
+                itemPreview.add(sImg, 0, sameRow);
+                itemPreview.add(sText, 0, sameRow);
+            }
         }
 
         // socket bonus
-        if (!currentItem.getSocketBonus().equals("0"))
+        if (currentItem.getSocketBonus() != 0)
         {
-            Node sBonus = new Text(String.format("Socket Bonus: %s", ItemPreview.getSocketBonus().get(Integer.parseInt(currentItem.getSocketBonus()))));
-            item.add(sBonus, 0, row += 1);
+            Text sBonus = new Text(String.format("Socket Bonus: %s", ItemPreview.getSocketBonus().get(currentItem.getSocketBonus())));
+            itemPreview.add(sBonus, 0, row += 1);
         }
 
         // allowable classes
-        if (!currentItem.getAllowableClass().equals("-1"))
+        if (currentItem.getAllowableClass() != -1)
         {
-            Node aClass = new Text(String.format("Classes: %s", ItemPreview.getAllowableClass().get(Integer.parseInt(currentItem.getAllowableClass()))));
-            item.add(aClass, 0, row += 1);
+            Text aClass = new Text(String.format("Classes: %s", ItemPreview.getAllowableClass().get(currentItem.getAllowableClass())));
+            itemPreview.add(aClass, 0, row += 1);
         }
 
         // required level
-        if (!currentItem.getRequiredLevel().equals("0"))
+        if (currentItem.getRequiredLevel() != 0)
         {
-            Node req = new Text(String.format("Requires Level %s", currentItem.getRequiredLevel()));
-            item.add(req, 0, row += 1);
+            Text req = new Text(String.format("Requires Level %d", currentItem.getRequiredLevel()));
+            itemPreview.add(req, 0, row += 1);
         }
 
         // item secondary stats
         for (Node text : stuff)
         {
             text.getStyleClass().add("green");
-            item.add(text, 0, row += 1);
+            itemPreview.add(text, 0, row += 1);
         }
 
-        int spellId[] = Stream.of(currentItem.getSpellid()).mapToInt(Integer::parseInt).toArray(),
-            spellTrigger[] = Stream.of(currentItem.getSpelltrigger()).mapToInt(Integer::parseInt).toArray();
+        int spellId[] = currentItem.getSpellid(),
+            spellTrigger[] = currentItem.getSpelltrigger();
 
         Map<Integer, String> spellIdText = ItemPreview.getSpellId(),
-                spellTriggerText = ItemPreview.getSpellTrigger();
+                             spellTriggerText = ItemPreview.getSpellTrigger();
 
         // item spells
         for (int i = 0; i < 5; i++)
@@ -691,11 +764,10 @@ public class AppController
             if (spellId[i] != 0)
             {
                 int sameRow = row += 1;
-                Node spell = new Text(String.format("%s%s", spellTriggerText.get(spellTrigger[i]), spellIdText.get(spellId[i])));
+                Text spell = new Text(String.format("%s%s", spellTriggerText.get(spellTrigger[i]), spellIdText.get(spellId[i])));
                 spell.getStyleClass().add("green");
-                Text.class.cast(spell).wrappingWidthProperty().bind(item.maxWidthProperty());
-                spell.maxHeight(100);
-                item.add(spell, 0, sameRow, 2, 1);
+                spell.wrappingWidthProperty().bind(itemPreview.maxWidthProperty());
+                itemPreview.add(spell, 0, sameRow, 2, 1);
             }
         }
 
@@ -704,12 +776,11 @@ public class AppController
         {
             Node desc = new Text(String.format("\"%s\"", currentItem.getDescription()));
             desc.getStyleClass().add("gold");
-            item.add(desc, 0, row += 1);
+            //desc.wrappingWidthProperty().bind(itemPreview.maxWidthProperty());
+            itemPreview.add(desc, 0, row + 1, 2, 1);
         }
 
-        item.getStylesheets().add(getClass().getResource("preview.css").toString());
-        item.setMaxWidth(400);
-
-        return true;
+        itemPreview.getStylesheets().add(getClass().getResource("itemPreview.css").toString());
+        itemPreview.setMaxWidth(400);
     }
 }

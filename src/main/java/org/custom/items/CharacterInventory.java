@@ -4,15 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import javafx.scene.control.Alert;
-
 public class CharacterInventory
 {
-    private Properties entries = new Properties();
+    private final Properties entries = new Properties();
 
-    private final Map<String, ItemTemplate> slots = new HashMap<>();
+    private final Map<String, ItemTemplate> slots = new HashMap<>(), slotsCopy = new HashMap<>();
 
-    public void getEntries(String name)
+    public void getEntries(String name) throws Exception
     {
         try
         {
@@ -26,21 +24,29 @@ public class CharacterInventory
                                           .append("More information is detailed below, if you can't solve this problem please contact chazy :)\n\n")
                                           .append(e.getMessage());
 
-            UX.showAlert(Alert.AlertType.ERROR, "Filesystem error", msg.toString());
-            return;
+            throw new Exception(msg.toString());
         }
     }
 
-    public ItemTemplate getSlot(String slotName) throws Exception
+    public boolean checkSlot(String slotName)
     {
-        setSlot(slotName);
+        return slots.containsKey(slotName);
+    }
 
+    public ItemTemplate getSlot(String slotName)
+    {
         return slots.get(slotName);
     }
 
-    private void setSlot(String slotName) throws Exception
+    public ItemTemplate getSlotCopy(String slotName)
+    {
+        return slotsCopy.get(slotName);
+    }
+
+    public void setSlot(String slotName) throws Exception
     {
         slots.put(slotName, populateSlot(slotName));
+        slotsCopy.put(slotName, new ItemTemplate());
     }
 
     private ItemTemplate populateSlot(String slotName) throws Exception

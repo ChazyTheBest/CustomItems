@@ -1,4 +1,4 @@
-GridPane {
+GridPane#itemPreview {
     -fx-font-family: arial;
     -fx-padding: 10px;
     -fx-border-width: 1px;
@@ -8,19 +8,16 @@ GridPane {
     -fx-background-color: #080d22;
 }
 
-Text { -fx-fill: white; -fx-font-size: 16px }
+Text { -fx-fill: white; -fx-font-size: 17px }
 
-Text.itemName { -fx-font-size: 18px }
-
-Text.green { -fx-fill: green }
-Text.gold { -fx-fill: gold }
+Text.itemName { -fx-font-size: 20px }
 
 Label.socket {
     -fx-padding: 4px 0 0 18px;
     -fx-display: block;
     -fx-width: 19px;
     -fx-height: 19px;
-    -fx-background-image: url("./sockets.png");
+    -fx-background-image: url("./ItemPreviewAssets/sockets.png");
 }
 
 Label#metaSocket { -fx-background-position: 0px 0px }
@@ -29,3 +26,5 @@ Label#yellowSocket { -fx-background-position: 0px -38px }
 Label#blueSocket { -fx-background-position: 0px -57px }
 
 Text.gray { -fx-fill: gray }
+Text.green { -fx-fill: green }
+Text.gold { -fx-fill: gold }

@@ -5,14 +5,15 @@
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Text?>
 
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
-<GridPane fx:id="form" alignment="center" hgap="10" stylesheets="@form.css" vgap="10" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+
+<GridPane fx:id="itemForm" onMouseClicked="#handleFormClicks" alignment="center" hgap="10" vgap="10" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
         <ColumnConstraints halignment="RIGHT" percentWidth="0.0" prefWidth="75.0" />
         <ColumnConstraints percentWidth="0.0" />
@@ -21,7 +22,7 @@
     </columnConstraints>
 
     <ImageView onMouseClicked="#backToInventory" fitHeight="32.0" fitWidth="32.0" GridPane.halignment="LEFT" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
-        <Image url="@back.png"/>
+        <Image url="@AppIcons/back.png"/>
     </ImageView>
 
     <Text id="formTitle" text="New Item" GridPane.columnSpan="4" GridPane.halignment="CENTER" />
@@ -68,8 +69,8 @@
     <TextField fx:id="spell5" styleClass="spell" GridPane.columnIndex="2" GridPane.rowIndex="7" />
     <TextField fx:id="trigger5" styleClass="trigger" GridPane.columnIndex="3" GridPane.rowIndex="7" />
 
-    <Button onAction="#create" prefHeight="40" text="Create Item" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-    <Button defaultButton="true" onAction="#preview" prefHeight="40" text="Preview Item" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="9" />
+    <Button                      onAction="#create"  prefHeight="40" text="Create Item"  GridPane.columnIndex="1" GridPane.rowIndex="9" />
+    <Button defaultButton="true" onAction="#preview" prefHeight="40" text="Preview Item" GridPane.columnIndex="1" GridPane.rowIndex="9" GridPane.halignment="RIGHT" />
 
    <rowConstraints>
       <RowConstraints percentHeight="0.0" />

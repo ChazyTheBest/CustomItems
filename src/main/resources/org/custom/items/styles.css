@@ -1,0 +1,140 @@
+/* PARENT */
+#root { -fx-background-color: #333333; -fx-font-family: arial }
+
+.rootBG {
+    -fx-pref-width: 1050px;
+    -fx-pref-height: 685;
+    -fx-display: block;
+    -fx-background-image: none;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: top left;
+    -fx-background-image: url("./background.jpg")
+}
+
+#titleBar, TextField, PasswordField {
+    -fx-border-width: 0 0 .5px;
+    -fx-border-style: solid;
+    -fx-border-color: white;
+}
+
+#titleBar { -fx-padding: 5px 10px }
+
+#titleBar:hover { -fx-border-color: #99de3e }
+
+#title { -fx-font-size: 16px; -fx-fill: #c9c9c9 }
+
+/* FORM DEFAULTS */
+Label, TextField, PasswordField, Button { -fx-text-fill: white }
+
+TextField, PasswordField, Button {
+    -fx-background-color: transparent;
+    -fx-border: none;
+    -fx-padding: 0 5px;
+}
+
+TextField, PasswordField { -fx-pref-height: 40px }
+
+TextField:focused, PasswordField:focused {
+    -fx-border-color: #99de3e
+}
+
+Button {
+    -fx-padding: 10px;
+    -fx-border-radius: 3px;
+    -fx-background-color: #41870d
+}
+
+Button:hover { -fx-background-color: #48970d }
+Button:active { -fx-effect: drop shadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0) }
+
+/* APP BODY */
+BorderPane#appBody {
+    -fx-display: block;
+    -fx-pref-width: 100%;
+    -fx-pref-height: 100%;
+}
+
+VBox > Text {
+    -fx-font-weight: 700;
+    -fx-font-size: 25px;
+    -fx-fill: white;
+}
+
+Text#className {
+    -fx-fill: rgb(235, 222, 194);
+    -fx-font-size: 20px;
+}
+
+GridPane#classes {
+    -fx-padding: 0 25px;
+}
+
+GridPane.class {
+    -fx-pref-width: 100%;
+    -fx-pref-height: 100%;
+    -fx-padding: 0 0 15px
+}
+
+GridPane.class:hover, GridPane.selected {
+    -fx-border-width: 0 0 2px;
+    -fx-border-style: solid;
+    -fx-border-color: #f8b700;
+}
+
+GridPane.class Label {
+    -fx-line-height: 21.6px;
+    -fx-font-weight: 700;
+    -fx-font-size: 16px;
+    -fx-text-fill: rgb(248, 183, 0)
+}
+
+GridPane.class:hover Label, GridPane.selected Label { -fx-text-fill: white }
+
+/* ROLES SECTION */
+Label.role {
+  -fx-position: relative;
+  -fx-display: block;
+  -fx-padding: 0 15px;
+  -fx-border: none;
+  -fx-text-fill: white;
+  -fx-transition: 0.2s;
+  -fx-pref-width: 200px;
+  -fx-pref-height: 49px;
+  -fx-background-image: url("./roles.png");
+   -fx-background-repeat: no-repeat;
+  -fx-background-color: linear-gradient(to right, rgb(52, 4, 6) 0%, rgba(52, 4, 6, 0.93) 7%, rgba(111, 15, 12, 0.30) 100%);
+  -fx-alignment: CENTER-RIGHT;
+  -fx-font-size: 20px;
+}
+Label.tank { -fx-background-position: 0px 0px }
+Label.healer { -fx-background-position: 0px -50px }
+Label.dps { -fx-background-position: 0px -100px }
+
+/* INVENTORY SECTION */
+ImageView.slot {
+    -fx-opacity: .75;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+}
+
+ImageView.slot:hover { -fx-opacity: 1 }
+
+/* ITEM FORM */
+GridPane#itemForm { -fx-padding: 20px }
+
+#itemForm Text { -fx-fill: #c9c9c9 }
+
+Text#formTitle { -fx-font-size: 32px }
+
+Text.sections { -fx-font-size: 22px }
+Text.subsections, #gold, #pve { -fx-font-size: 18px }
+
+#gold { -fx-text-fill: gold }
+#pve { -fx-text-fill: rgb(255,0,102) }
+
+TextField.left { -fx-alignment: CENTER-RIGHT }
+TextField.right { -fx-pref-width: 350px }
+TextField.spell, TextField.trigger { -fx-alignment: CENTER }
+
+GridPane#itemForm Label { -fx-font-size: 16px }
+GridPane#itemForm TextField { -fx-font-size: 15px }
+GridPane#itemForm Button { -fx-font-size: 17px; -fx-fill: #c9c9c9 }

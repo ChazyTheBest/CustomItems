@@ -20,9 +20,15 @@ public class RootController extends BorderPane
     private Stage stage;
     private double x, y;
     private Image logo;
-    private ImageCursor mouse;
+    private ImageCursor mouseCursor, mouseCursorGlow, mouseCursorPreview, mouseCursorPreviewOff, mouseCursorGossip,
+                        mouseCursorAttack, mouseCursorCreate, mouseCursorCreateOff, mouseCursorWheel;
 
     RootController()
+    {
+
+    }
+
+    private void loadRoot()
     {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("root.fxml"));
 
@@ -37,18 +43,28 @@ public class RootController extends BorderPane
         catch (Exception e)
         {
             System.out.println("Error loading root.fxml.");
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
     public void launchAuth(Stage s) throws IOException
     {
+        loadRoot();
+
         stage = s;
-        mouse = new ImageCursor(new Image(getClass().getResource("cursor.png").openStream()));
+        mouseCursor = new ImageCursor(new Image(getClass().getResource("Cursors/cursor.png").openStream()));
+        mouseCursorGlow = new ImageCursor(new Image(getClass().getResource("Cursors/cursor_glow.png").openStream()));
+        mouseCursorPreview = new ImageCursor(new Image(getClass().getResource("Cursors/cursor_preview.png").openStream()));
+        mouseCursorPreviewOff = new ImageCursor(new Image(getClass().getResource("Cursors/cursor_preview_off.png").openStream()));
+        mouseCursorGossip = new ImageCursor(new Image(getClass().getResource("Cursors/cursor_gossip.png").openStream()));
+        mouseCursorAttack = new ImageCursor(new Image(getClass().getResource("Cursors/cursor_attack.png").openStream()));
+        mouseCursorCreate = new ImageCursor(new Image(getClass().getResource("Cursors/cursor_create.png").openStream()));
+        mouseCursorCreateOff = new ImageCursor(new Image(getClass().getResource("Cursors/cursor_create_off.png").openStream()));
+        mouseCursorWheel = new ImageCursor(new Image(getClass().getResource("Cursors/cursor_wheel.png").openStream()));
         logo = new Image(getClass().getResource("logo.png").openStream());
 
         Scene scene = new Scene(this);
-        scene.setCursor(mouse);
+        scene.setCursor(mouseCursor);
         s.initStyle(StageStyle.UNDECORATED);
         s.getIcons().add(logo);
         s.setTitle(title.getText());
@@ -110,8 +126,48 @@ public class RootController extends BorderPane
         return logo;
     }
 
-    public ImageCursor getMouse()
+    public ImageCursor getMouseCursor()
     {
-        return mouse;
+        return mouseCursor;
+    }
+
+    public ImageCursor getMouseCursorGlow()
+    {
+        return mouseCursorGlow;
+    }
+
+    public ImageCursor getMouseCursorPreview()
+    {
+        return mouseCursorPreview;
+    }
+
+    public ImageCursor getMouseCursorPreviewOff()
+    {
+        return mouseCursorPreviewOff;
+    }
+
+    public ImageCursor getMouseCursorGossip()
+    {
+        return mouseCursorGossip;
+    }
+
+    public ImageCursor getMouseCursorAttack()
+    {
+        return mouseCursorAttack;
+    }
+
+    public ImageCursor getMouseCursorCreate()
+    {
+        return mouseCursorCreate;
+    }
+
+    public ImageCursor getMouseCursorCreateOff()
+    {
+        return mouseCursorCreateOff;
+    }
+
+    public ImageCursor getMouseCursorWheel()
+    {
+        return mouseCursorWheel;
     }
 }

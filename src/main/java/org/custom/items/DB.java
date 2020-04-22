@@ -1,9 +1,6 @@
 package org.custom.items;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 
 public class DB
@@ -25,8 +22,8 @@ public class DB
         return connection.createStatement().executeQuery(query);
     }
 
-    public static void execute(String query) throws SQLException
+    public static PreparedStatement prepare(String query) throws SQLException
     {
-        connection.createStatement().executeUpdate(query);
+        return connection.prepareStatement(query);
     }
 }
