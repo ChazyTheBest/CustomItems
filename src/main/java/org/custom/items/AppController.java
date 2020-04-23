@@ -1,14 +1,17 @@
 package org.custom.items;
 
+import java.io.IOException;
 import java.util.*;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.scene.ImageCursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -51,6 +54,7 @@ public class AppController
     private GridPane currentSelected;
     private ItemTemplate currentItem, currentItemCopy;
     private boolean success = false, preview = false;
+    private final RootController PreviewRoot = new RootController();
     private final Stage previewStage = new Stage();
     private final GridPane itemPreview = new GridPane();
     private final Scene previewScene = new Scene(itemPreview);
@@ -417,7 +421,7 @@ public class AppController
     }
 
     @FXML
-    private void preview()
+    private void preview() throws IOException
     {
         try
         {
@@ -430,31 +434,27 @@ public class AppController
             return;
         }
 
+        previewStage.close();
+
+        // root.getMouseCursor() gets reset after previewStage.close()...
+        previewScene.setCursor(new ImageCursor(new Image(getClass().getResource("Cursors/cursor.png").openStream())));
+
         if (!preview)
         {
-            RootController PreviewRoot = new RootController();
-            PreviewRoot.setStage(previewStage);
-
             itemPreview.setId("itemPreview");
             itemPreview.setOnMousePressed(PreviewRoot::pressed);
             itemPreview.setOnMouseDragged(PreviewRoot::dragged);
 
-            previewScene.setCursor(root.getMouseCursor());
-
+            PreviewRoot.setStage(previewStage);
             previewStage.initStyle(StageStyle.UNDECORATED);
             previewStage.getIcons().add(root.getLogo());
             previewStage.setTitle("Item Preview");
             previewStage.setScene(previewScene);
-            previewStage.show();
 
             preview = true; // won't get executed again
         }
 
-        else
-        {
-            previewStage.close();
-            previewStage.show();
-        }
+        previewStage.show();
     }
 
     @FXML
